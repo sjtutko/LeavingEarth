@@ -16,12 +16,12 @@ specific language governing permissions and limitations
 under the License.
 
 --------------------------gameboards.py------------------------------
-This module represents the game boards and missions of Leaving Earth 
-(by the Lumenaris Group) and the two expansion packs: Outer Planets 
+This module represents the game boards and missions of Leaving Earth
+(by the Lumenaris Group) and the two expansion packs: Outer Planets
 and Stations.
 
 This module is not intended as a stand-alone module and has no main()
-This module contains the Gameboard class, which is initialized with 
+This module contains the Gameboard class, which is initialized with
 the maps of each game board.
 """
 
@@ -30,7 +30,8 @@ Keys are nodes, Values are Edges
 Edges are tuples of the form (destination, cost, time, [hazards])"""
 
 gameboard = {'Earth' : [('Sub-orbital Space',3,0,[]),
-                        ('Earth Orbit',8,0,[])],
+                        ('Earth Orbit',8,0,[]),
+                        ('Earth', -1, 0, [])],
              'Sub-orbital Space' : [('Earth',-1,0,[]),
                                     ('Earth Orbit',5,0,[])],
              'Earth Orbit' : [('Earth', 0, 0, ['atmosphere']),
@@ -39,14 +40,17 @@ gameboard = {'Earth' : [('Sub-orbital Space',3,0,[]),
                               ('Mars Fly-by', 3, 3, ['radiation']),
                               ('Mars Orbit', 5, 3, ['radiation']),
                               ('Inner Planetary Transfer', 3, 1, []),
-                              ('Outer Planetary Transfer', 6, 1, ['radiation'])],
+                              ('Outer Planetary Transfer', 6, 1,['radiation']),
+                              ('Earth Orbit', -1, 0, [])],
              'Lunar Fly-by' : [('Earth Orbit', 1, 0, []),
                                ('Lunar Orbit', 2, 0, []),
-                               ('Moon', 4, 0, ['landing']), 
+                               ('Moon', 4, 0, ['landing']),
                                ('LOST', -1, 0, [])],
              'Lunar Orbit' : [('Earth Orbit', 3, 0, []),
-                              ('Moon', 2, 0, ['landing'])],
-             'Moon' : [('Lunar Orbit', 2, 0, [])],
+                              ('Moon', 2, 0, ['landing']),
+                              ('Lunar Orbit', -1, 0, [])],
+             'Moon' : [('Lunar Orbit', 2, 0, []),
+                       ('Moon', -1, 0, [])],
              'Mars Fly-by' : [('Mars Orbit', 3, 1, []),
                               ('Mars', 3, 0, ['atmosphere','landing']),
                               ('LOST', -1, 0, [])],
@@ -54,16 +58,36 @@ gameboard = {'Earth' : [('Sub-orbital Space',3,0,[]),
                              ('Mars', 0, 0, ['atmosphere', 'landing']),
                              ('Phobos', 1, 0, ['landing']),
                              ('Inner Planetary Transfer', 4, 2, ['radiation']),
-                             ('Outer Planetary Transfer', 5, 1, ['radiation'])],
-             'Mars' : [('Mars Orbit', 3, 0, [])],
-             'Phobos' : [('Mars Orbit', 1, 0, [])],
-             'Ceres' : [], 
-             'Venus Fly-by' : [],
-             'Venus Orbit' : [],
-             'Venus' : [],
-             'Mercury Fly-by' : [],
-             'Mercury Orbit' : [],
-             'Mercury' : [],
-             'Inner Planetary Transfer' : [],
-             'Outer Planetary Transfer' : [],
-             'LOST' : []}
+                             ('Outer Planetary Transfer', 5, 1, ['radiation']),
+                             ('Mars Orbit', -1, 0, [])],
+             'Mars' : [('Mars Orbit', 3, 0, []),
+                       ('Mars', -1, 0, [])],
+             'Phobos' : [('Mars Orbit', 1, 0, []),
+                         ('Phobos', -1, 0, [])],
+             'Ceres' : [('Inner Planetary Transfer', 5, 2, ['radiation']),
+                        ('Outer Planetary Transfer', 3, 1, ['radiation']),
+                        ('Ceres', -1, 0, [])],
+             'Venus Fly-by' : [('Venus Orbit', 1, 0, []),
+                               ('LOST', -1, 0, [])],
+             'Venus Orbit' : [('Venus', 0, 0, ['atmosphere']),
+                              ('Inner Planetary Transfer', 3, 1, ['radiation']),
+                              ('Outer Planetary Transfer', 9, 1, ['radiation']),
+                              ('Venus Orbit', -1, 0, ['radiation'])],
+             'Venus' : [('Venus Orbit', 6, 0, []),
+                        ('Venus', -1, 0, [])],
+             'Mercury Fly-by' : [('Mercury Orbit', 2, 0, []),
+                                 ('Mercury', 4, 0, ['landing']),
+                                 ('LOST', -1, 0, [])],
+             'Mercury Orbit' : [('Mercury', 2, 0, ['landing']),
+                                ('Inner Planetary Transfer', 7, 1, ['radiation']),
+                                ('Mercury Orbit', -1, 0, [])],
+             'Mercury' : [('Mercury Orbit', 2, 0, []),
+                          ('Mercury', -1, 0, [])],
+             'Inner Planetary Transfer' : [('Earth Orbit', 3, 1, []),
+                                           ('Mars Orbit', 4, 2, ['radiation']),
+                                           ('Ceres', 5, 1, ['radiation', 'landing']),
+                                           ('Venus Orbit', 3, 1, ['radiation']),
+                                           ('Venus Fly-by', 2, 1, ['radiation']),
+                                           ('Mercury Fly-by', 5, 1, ['radiation']),
+                                           ('LOST', -1, 0, [])],
+             'LOST' : [('LOST', -1, 0, [])]}
