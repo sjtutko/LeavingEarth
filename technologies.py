@@ -24,3 +24,30 @@ This module is not intended as a stand-alone module and has no main()
 This module contains several classes, which record the attributes of
 each technology or vehicle in the game.
 """
+from abc import ABC, abstractmethod
+from random import choice, sample
+
+class researchedTech(ABC):
+  """parent class for all technology"""
+
+  """risk outcome deck has:
+      60 success cards, $10 to remove
+      15 minor failure cards, $5 to remove
+      15 major failure cards, $5 to remove"""
+  _riskDeck = ['success']*60+['minor failure']*15+['major failure']*15
+
+  def __init__(self):
+    self._cost = 10
+    self.initializeRisk
+    super().__init__()
+
+  def initializeRisk(self):
+    self.riskCards = sample(researchedTech._riskDeck,3)
+  
+  def getRisk(self):
+    return choice(self.riskCards)
+
+  @staticmethod
+  @abstractmethod
+  def getOutcome(riskOutcome):
+    pass
