@@ -27,8 +27,47 @@ each technology or vehicle in the game.
 from abc import ABC, abstractmethod
 from random import choice, sample
 
-class researchedTech(ABC):
+class item(ABC):
   """parent class for all technology"""
+  def __init__(self):
+    self._cost = 0
+    super().__init__()
+  
+  def getCost(self):
+    return self._cost
+
+class astronaut(item):
+  """defining class for all atronauts.
+  astronaut skills: medic, pilot,
+  all astronauts have zero mass (stated for clarity)"""
+  
+  _names = {'medic' : ['Mike Collins','Valentina Tereshkova','Valery Bykovsky',
+                       'Gherman Titov', 'Boris Yegorov'],
+            'pilot' : ['Neil Armstrong','Joseph Walker','Alan Shepard',
+                       'John Glenn','Yuri Gagarin'],
+            'mechanic' : ['Jim Lovell','Vladimir Komarov','Gus Grissom',
+                          'Buzz Aldrin','Konstantin Feoktistov']}
+
+  def __init__(self, skill, name = ''):
+    self._cost = 5
+    self._skill = skill
+    if name is not '':
+      self._name = name
+    else:
+      self._name = choice(astronaut._names[skill])
+    super().__init__()
+  
+  def getSkill(self):
+    return self._skill
+  
+  def getName(self):
+    return self._name
+  
+  def getMass(self):
+    return 0
+
+class advancement(item):
+  """parent class for all advancements"""
 
   """risk outcome deck has:
       60 success cards, $10 to remove
@@ -38,16 +77,71 @@ class researchedTech(ABC):
 
   def __init__(self):
     self._cost = 10
-    self.initializeRisk
+    self.initializeRisk()
     super().__init__()
 
   def initializeRisk(self):
-    self.riskCards = sample(researchedTech._riskDeck,3)
+    self.riskCards = sample(advancement._riskDeck,3)
   
   def getRisk(self):
     return choice(self.riskCards)
 
   @staticmethod
   @abstractmethod
-  def getOutcome(riskOutcome):
+  def getOutcome(riskOutcome, crewSkills = []):
     pass
+
+class surveying(advancement):
+  @staticmethod
+  def getOutcome(riskOutcome, crewSkills = []):
+    if riskOutcome == 'success':
+      return "Surveying Success"
+    else:
+      return "Surveying Fails"
+
+class rendezvous(advancement):
+  @staticmethod
+  def getOutcome(riskOutcome, crewSkills = []):
+      if riskOutcome == 'success':
+        return "Docking/Separating Successful"
+      elif riskOutcome == 'minor failure' and 'pilot' in crewSkills:
+        return "Docking/Separating Successful"
+      else:
+        return "No Docking/Separating, Damage Chosen Comp."
+
+class lifeSupport(advancement):
+  @staticmethod
+  def getOutcome(riskOutcome, crewSkills = []):
+    if riskOutcome == 'success':
+      return "Occupants Survive"
+    elif riskOutcome == 'minor failure' and 'mechanic' in crewSkills:
+        return "Occupants Survive"
+    else:
+      return "Occupants Die"
+
+class reEntry(advancement):
+  @staticmethod
+  def getOutcome(riskOutcome, crewSkills = []):
+    if riskOutcome == 'success':
+      return "Atmospheric Re-Entry Successful"
+    elif riskOutcome == 'minor failure':
+      return "Capsule is damaged, Occupants Survive"
+    elif riskOutcome == 'major failure':
+      return "Capsule is destroyed, Occupants Die"
+
+class landing(advancement):
+  @staticmethod
+  def getOutcome(riskOutcome, crewSkills = []):
+    if riskOutcome == 'success':
+      return "Landing Successful"
+    elif riskOutcome == 'minor failure' and 'pilot' in crewSkills:
+      return "Landing Successful"
+    elif riskOutcome == 'minor failure':
+      return "Rough Landing, Damage Chosen Comp."
+    elif riskOutcome == 'major failure' and 'pilot' in crewSkills:
+      return "Rough Landing, Damage Chosen Comp."
+    elif riskOutcome == 'major failure':
+      return "Impact with Surface, Spacecraft Destroyed"
+
+class component(item):
+  pass
