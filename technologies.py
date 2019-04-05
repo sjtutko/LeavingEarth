@@ -30,13 +30,35 @@ from random import choice, sample
 class item(ABC):
   """parent class for all technology"""
   def __init__(self):
-    self._cost = 0
     super().__init__()
+    self._cost = 0
   
   def getCost(self):
     return self._cost
 
-class astronaut(item):
+class payload(item):
+  """parent class for all payload components:
+  samples, supplies, probes, capsules
+  Capabilities represent the Advanced maneuvers the payload can participate in,
+  by definition the payload cannot participate in maneuvers not listed.
+  Restrictions represent pre-requisites for purchasing"""
+  
+  def __init__(self):
+    super().__init__()
+    self._mass = 0
+    self._capabilities = []
+    self._restrictions = []
+
+  def getMass(self):
+    return self._mass
+
+  def getCapabilities(self):
+    return self._capabilities
+  
+  def getRestrictions(self):
+    return self._restrictions
+
+class astronaut(payload):
   """defining class for all atronauts.
   astronaut skills: medic, pilot,
   all astronauts have zero mass (stated for clarity)"""
@@ -49,22 +71,19 @@ class astronaut(item):
                           'Buzz Aldrin','Konstantin Feoktistov']}
 
   def __init__(self, skill, name = ''):
+    super().__init__()
     self._cost = 5
     self._skill = skill
     if name is not '':
       self._name = name
     else:
       self._name = choice(astronaut._names[skill])
-    super().__init__()
   
   def getSkill(self):
     return self._skill
   
   def getName(self):
     return self._name
-  
-  def getMass(self):
-    return 0
 
 class advancement(item):
   """parent class for all advancements"""
@@ -76,9 +95,9 @@ class advancement(item):
   _riskDeck = ['success']*60+['minor failure']*15+['major failure']*15
 
   def __init__(self):
+    super().__init__()
     self._cost = 10
     self.initializeRisk()
-    super().__init__()
 
   def initializeRisk(self):
     self.riskCards = sample(advancement._riskDeck,3)
@@ -88,10 +107,19 @@ class advancement(item):
 
   @staticmethod
   @abstractmethod
+  def getCapability():
+    pass
+  
+  @staticmethod
+  @abstractmethod
   def getOutcome(riskOutcome, crewSkills = []):
     pass
 
 class surveying(advancement):
+  @staticmethod
+  def getCapability():
+    return 'surveying'
+  
   @staticmethod
   def getOutcome(riskOutcome, crewSkills = []):
     if riskOutcome == 'success':
@@ -100,6 +128,10 @@ class surveying(advancement):
       return "Surveying Fails"
 
 class rendezvous(advancement):
+  @staticmethod
+  def getCapability():
+    return 'rendezvous'
+  
   @staticmethod
   def getOutcome(riskOutcome, crewSkills = []):
       if riskOutcome == 'success':
@@ -111,6 +143,10 @@ class rendezvous(advancement):
 
 class lifeSupport(advancement):
   @staticmethod
+  def getCapability():
+    return 'life support'
+  
+  @staticmethod
   def getOutcome(riskOutcome, crewSkills = []):
     if riskOutcome == 'success':
       return "Occupants Survive"
@@ -121,6 +157,10 @@ class lifeSupport(advancement):
 
 class reEntry(advancement):
   @staticmethod
+  def getCapability():
+    return 're-entry'
+  
+  @staticmethod
   def getOutcome(riskOutcome, crewSkills = []):
     if riskOutcome == 'success':
       return "Atmospheric Re-Entry Successful"
@@ -130,6 +170,10 @@ class reEntry(advancement):
       return "Capsule is destroyed, Occupants Die"
 
 class landing(advancement):
+  @staticmethod
+  def getCapability():
+    return 'landing'
+  
   @staticmethod
   def getOutcome(riskOutcome, crewSkills = []):
     if riskOutcome == 'success':
@@ -143,5 +187,74 @@ class landing(advancement):
     elif riskOutcome == 'major failure':
       return "Impact with Surface, Spacecraft Destroyed"
 
-class component(item):
-  pass
+class rockSample(payload):
+  def __init__(self, origin):
+    super().__init__()
+    self._origin = origin
+    self._mass = 0
+    self._restrictions = []
+
+  def getOrigin(self):
+    return self._origin
+
+class supplies(payload):
+  def __init__(self, quantity=1):
+    super().__init__()
+    self._cost = quantity
+    self._mass = quantity
+    self._restrictions = ['life support']
+
+class probe(payload):
+  def __init__(self):
+    super().__init__()
+    self._cost = 2
+    self._mass = 1
+    self._capabilities = ['surveying','rendezvous']
+    self._restrictions = []
+    self._status = 'operational'
+
+  def getStatus(self):
+    return self._status
+
+  def damage(self):
+    self._status = 'damaged'
+
+  def repair(self, crewSkills = [], location = 'away'):
+    if 'mechanic' in crewSkills:
+      self._status = 'operational'
+    elif location == 'Earth':
+      self._status = 'operational'
+    else:
+      print("probe cannot be repaired")
+
+class capsule(payload):
+  def __init__(self):
+    super().__init__()
+    self._capacity = 0
+    self._status = 'operational'
+
+  def getCapacity(self):
+    return self._capacity
+  
+  def getStatus(self):
+    return self._status
+
+  def damage(self):
+    self._status = 'damaged'
+
+  def repair(self, crewSkills = [], location = 'away'):
+    if 'mechanic' in crewSkills:
+      self._status = 'operational'
+    elif location == 'Earth':
+      self._status = 'operational'
+    else:
+      print("capsule cannot be repaired")
+
+class eagle(capsule):
+  def __init__(self):
+    super().__init__()
+    self._capacity = 2
+    self._mass = 1
+    self._cost = 4
+    self._capabilities = ['surveying','rendezvous','landing','life support']
+    self._restrictions = ['landing']
