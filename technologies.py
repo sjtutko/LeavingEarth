@@ -47,6 +47,8 @@ Class Hierarchy and Attributes:
 |||+Vostok
 |||+Apollo
 |||+Aldrin
+|||+Rocket
+||||*thrust
 |+Advancement
 ||*riskCards
 ||*capability
@@ -55,6 +57,7 @@ Class Hierarchy and Attributes:
 ||+LifeSupport
 ||+ReEntry
 ||+Landing
+||+RocketTech
 """
 from abc import ABC, abstractmethod
 from random import choice, sample
@@ -390,3 +393,132 @@ class aldrin(craft):
     self._capabilities = ['surveying','rendezvous','life support','radiation']
     self._restrictions = ['life support']
     self._hazardousManeuvers = ['re-entry','landing']
+
+class rocketTech(advancement):
+  def __init__(self):
+    super().__init__()
+  
+  @staticmethod
+  def getCapability():
+    return 'transfer'
+  
+  @staticmethod
+  def getOutcome(riskOutcome, crewSkills = []):
+    if riskOutcome == 'success':
+      return "Rocket discarded, provides thrust"
+    elif riskOutcome == 'minor failure':
+      return "Rocket damaged, provides no thrust"
+    else:
+      return "Explosion destroys spacecraft"
+
+class junoTech(rocketTech):
+  def __init__(self):
+    super().__init__()
+  
+  @staticmethod
+  def getCapability():
+    return 'juno'
+
+class atlasTech(rocketTech):
+  def __init__(self):
+    super().__init__()
+  
+  @staticmethod
+  def getCapability():
+    return 'atlas'
+
+class soyuzTech(rocketTech):
+  def __init__(self):
+    super().__init__()
+  
+  @staticmethod
+  def getCapability():
+    return 'soyuz'
+
+class saturnTech(rocketTech):
+  def __init__(self):
+    super().__init__()
+  
+  @staticmethod
+  def getCapability():
+    return 'saturn'
+
+class ionTech(rocketTech):
+  def __init__(self):
+    super().__init__()
+  
+  @staticmethod
+  def getCapability():
+    return 'ion'
+  
+  @staticmethod
+  def getOutcome(riskOutcome, crewSkills = []):
+    if riskOutcome == 'success':
+      return "Thruster provides thrust"
+    else:
+      return "Thruster damaged, provides no thrust"
+
+class rocket(craft):
+  def __init__(self):
+    super().__init__()
+    self._capacity = 0
+    self._thrust = 0
+    self._status = 'operational'
+    self._capabilities = set([])
+    self._restrictions = set([])
+    self._hazardousManeuvers = set([])
+
+class juno(rocket):
+  def __init__(self):
+    super().__init__()
+    self._thrust = 4
+    self._mass = 1
+    self._cost = 1
+    self._status = 'operational'
+    self._capabilities = set([])
+    self._restrictions = set(['juno'])
+    self._hazardousManeuvers = set([])
+
+class atlas(rocket):
+  def __init__(self):
+    super().__init__()
+    self._thrust = 27
+    self._mass = 4
+    self._cost = 5
+    self._status = 'operational'
+    self._capabilities = set([])
+    self._restrictions = set(['atlas'])
+    self._hazardousManeuvers = set([])
+
+class soyuz(rocket):
+  def __init__(self):
+    super().__init__()
+    self._thrust = 80
+    self._mass = 9
+    self._cost = 8
+    self._status = 'operational'
+    self._capabilities = set([])
+    self._restrictions = set(['soyuz'])
+    self._hazardousManeuvers = set([])
+
+class saturn(rocket):
+  def __init__(self):
+    super().__init__()
+    self._thrust = 200
+    self._mass = 20
+    self._cost = 15
+    self._status = 'operational'
+    self._capabilities = set([])
+    self._restrictions = set(['saturn'])
+    self._hazardousManeuvers = set([])
+
+class ion(rocket):
+  def __init__(self):
+    super().__init__()
+    self._thrust = 5
+    self._mass = 1
+    self._cost = 10
+    self._status = 'operational'
+    self._capabilities = set([])
+    self._restrictions = set(['ion'])
+    self._hazardousManeuvers = set([])
