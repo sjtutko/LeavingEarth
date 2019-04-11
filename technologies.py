@@ -95,7 +95,7 @@ class payload(item):
 
 class astronaut(payload):
   """defining class for all atronauts.
-  astronaut skills: medic, pilot,
+  astronaut skills: medic, pilot, mechanic
   all astronauts have zero mass (stated for clarity)
   status options: healthy, incapacitated, dead"""
   
