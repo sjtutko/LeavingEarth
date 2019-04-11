@@ -22,3 +22,19 @@ packs: Outer Planets and Stations.
 This module can be run on its own for basic mission planning or as
 called by leavingEarth.py for higher level simulation.  
 """
+def main():
+  """assumes module is called in isolation
+  this function can be a sort of scratchpad"""
+  pass
+
+def planMission():
+  pass
+
+def manageRisk():
+  pass
+
+def planProgram():
+  pass
+
+if __name__ == "__main__":
+    main()
