@@ -27,7 +27,15 @@ import math
 def main():
   """assumes module is called in isolation
   this function can serve as a scratchpad"""
-  pass
+  import gameboards
+  theRules = gameboards.gameboard()
+  myboard = theRules.getBoard()
+  earthPaths = shortestPaths(myboard,'Earth')
+  mercuryPaths = shortestPaths(myboard, 'Mercury')
+  outbound = getMissionSegment('Earth','Mercury',myboard,earthPaths)
+  inbound = getMissionSegment('Mercury','Earth',myboard,mercuryPaths)
+  fullMission = outbound+inbound
+  print(fullMission)
 
 def shortestPaths(gameboard, origin):
   """implementation of dijsktra's algorithm for shortest path from origin"""
@@ -48,34 +56,48 @@ def shortestPaths(gameboard, origin):
         current_node = node
     #for each unvisited neighbor of current node, calculate distance
     #replace known value if smaller
-    for neighbor in gameboard[current_node]:
-      if neighbor[0] in unvisitedNodes:
+    for neighbor in set(gameboard[current_node].keys()):
+      if neighbor in unvisitedNodes:
         #ignore automatic maneuvers (-1 cost maneuvers)
-        if neighbor[1]>-1:
-          tempDistance = pathSolution[current_node][0]+neighbor[1]
-          if tempDistance < pathSolution[neighbor[0]][0]:
-            pathSolution[neighbor[0]][0] = tempDistance
-            pathSolution[neighbor[0]][1] = current_node
+        if gameboard[current_node][neighbor][0]>-1:
+          tempDistance = pathSolution[current_node][0]+gameboard[current_node][neighbor][0]
+          if tempDistance < pathSolution[neighbor][0]:
+            pathSolution[neighbor][0] = tempDistance
+            pathSolution[neighbor][1] = current_node
     #remove current node from unvisited nodes
     unvisitedNodes.remove(current_node)
   
   return pathSolution
 
-def getPath(origin, destination, pathSolution):
+def getMissionSegment(origin, destination, gameboard, pathSolution):
+  """collect path, collect costs, zip path and costs together
+  for tuple pair (node, cost), cost to reach paired location
+  returned cost pairs will not include the origin, so mission segments
+  can be threaded together"""
+  
   path = [origin]
+  cost_pairs = []
   current_node = destination
   while pathSolution[current_node][1] != current_node:
     path.insert(1,current_node)
     current_node = pathSolution[current_node][1]
-  return path
+  for previous_node, current_node in zip(path, path[1:]):
+    cost_pairs.append((current_node,gameboard[previous_node][current_node]))
+  return cost_pairs
 
 def planMission():
+  pass
+
+def printMission():
   pass
 
 def manageRisk():
   pass
 
 def planProgram():
+  pass
+
+def printProgram():
   pass
 
 if __name__ == "__main__":

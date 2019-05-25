@@ -27,7 +27,7 @@ the maps of each game board.
 
 """Gameboards are held in a dictionary object.
 Keys are nodes, Values are Edges
-Edges are tuples of the form (destination, cost, time, [hazards])"""
+Edges are tuples of the form (cost, time, [hazards])"""
 
 class gameboard():
   _baselineMap = {'Earth' : {'Sub-orbital Space' : (3,0,[]),
