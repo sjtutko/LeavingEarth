@@ -67,9 +67,13 @@ class item(ABC):
   def __init__(self):
     super().__init__()
     self._cost = 0
+    self._expansion = 'Leaving Earth'
   
   def getCost(self):
     return self._cost
+
+  def getExpansion(self):
+    return self._expansion
 
 class payload(item):
   """parent class for all payload components:

@@ -23,11 +23,11 @@ This module can be run on its own for basic mission planning or as
 called by leavingEarth.py for higher level simulation.  
 """
 import math
+import gameboards, technologies
 
 def main():
   """assumes module is called in isolation
   this function can serve as a scratchpad"""
-  import gameboards
   theRules = gameboards.gameboard()
   myboard = theRules.getBoard()
   earthPaths = shortestPaths(myboard,'Earth')
@@ -74,7 +74,6 @@ def getMissionSegment(origin, destination, gameboard, pathSolution):
   for tuple pair (node, cost), cost to reach paired location
   returned cost pairs will not include the origin, so mission segments
   can be threaded together"""
-  
   path = [origin]
   cost_pairs = []
   current_node = destination
@@ -85,8 +84,14 @@ def getMissionSegment(origin, destination, gameboard, pathSolution):
     cost_pairs.append((current_node,gameboard[previous_node][current_node]))
   return cost_pairs
 
-def planMission():
+def planManeuver(totalMass, cost):
   pass
+
+def planMission(missinoSegment, ultimatePayload):
+  """args: 
+  missinoSegment - concatenated Mision Segments from getMissionSegment
+  ultimatePayload - (mass, astronauts)
+  """
 
 def printMission():
   pass
