@@ -67,7 +67,7 @@ class item(ABC):
   def __init__(self):
     super().__init__()
     self._cost = 0
-    self._expansion = 'Leaving Earth'
+    self._expansion = "Leaving Earth"
   
   def getCost(self):
     return self._cost
@@ -108,7 +108,9 @@ class astronaut(payload):
             'pilot' : ['Neil Armstrong','Joseph Walker','Alan Shepard',
                        'John Glenn','Yuri Gagarin'],
             'mechanic' : ['Jim Lovell','Vladimir Komarov','Gus Grissom',
-                          'Buzz Aldrin','Konstantin Feoktistov']}
+                          'Buzz Aldrin','Konstantin Feoktistov'],
+            'scientist': ['Jean-Loup Chretien','Ulf Merbold','Story Musgrave',
+                          'Sally Ride','Jack Schmitt']}
 
   def __init__(self, skill, name = ''):
     super().__init__()
@@ -170,6 +172,7 @@ class advancement(item):
     super().__init__()
     self._cost = 10
     self.initializeRisk()
+    self._restrictions = set([])
 
   def initializeRisk(self):
     self.riskCards = sample(advancement._riskDeck,3)
@@ -246,6 +249,25 @@ class reEntry(advancement):
       return "Capsule is damaged, occupants survive"
     elif riskOutcome == 'major failure':
       return "Capsule is destroyed, occupants die"
+
+class aerobraking(advancement):
+  def __init__(self):
+    super().__init__()
+    self._restrictions = ['re-entry']
+    self._expansion = "Outer Planets"
+  
+  @staticmethod
+  def getCapability():
+    return 'aerobraking'
+  
+  @staticmethod
+  def getOutcome(riskOutcome, crewSkills = []):
+    if riskOutcome == 'success':
+      return "Aerobraking Successful"
+    elif riskOutcome == 'minor failure':
+      return "Chosen comp. damaged, Spacecraft faces Atmosphere"
+    elif riskOutcome == 'major failure':
+      return "Spacecraft destroyed, occupants die"
 
 class landing(advancement):
   @staticmethod
@@ -357,6 +379,28 @@ class probe(craft):
     self._capabilities = set(['surveying','rendezvous','radiation'])
     self._restrictions = set([])
     self._hazardousManeuvers = set(['re-entry', 'landing'])
+
+class explorer(craft):
+  def __init__(self):
+    super().__init__()
+    self._capacity = 0
+    self._cost = 3
+    self._mass = 1
+    self._capabilities = set(['surveying','explore','rendezvous','radiation'])
+    self._restrictions = set(['rendezvous'])
+    self._hazardousManeuvers = set(['re-entry', 'landing'])
+    self._expansion = "Outer Planets"
+
+class galileo(craft):
+  def __init__(self):
+    super().__init__()
+    self._capacity = 0
+    self._cost = 5
+    self._mass = 2
+    self._capabilities = set(['surveying','rendezvous','radiation','radiation hardening'])
+    self._restrictions = set(['surveying'])
+    self._hazardousManeuvers = set(['re-entry', 'landing'])
+    self._expansion = "Outer Planets"
 
 class eagle(craft):
   def __init__(self):
@@ -493,6 +537,18 @@ class atlas(rocket):
     self._capabilities = set([])
     self._restrictions = set(['atlas'])
     self._hazardousManeuvers = set([])
+
+class proton(rocket):
+  def __init__(self):
+    super().__init__()
+    self._thrust = 70
+    self._mass = 6
+    self._cost = 12
+    self._status = 'operational'
+    self._capabilities = set([])
+    self._restrictions = set(['proton','soyuz'])
+    self._hazardousManeuvers = set([])
+    self._expansion = "Outer Planets"
 
 class soyuz(rocket):
   def __init__(self):
